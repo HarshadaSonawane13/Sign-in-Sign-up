@@ -23,8 +23,20 @@ conn.connect((err) => {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/public", express.static(__dirname + "/public"));
 
+app.use(
+  "/Patient Registration Form",
+  express.static(__dirname + "/Patient Registration Form")
+);
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
+});
+
+app.get("/ptrreg", (req, res) => {
+  res.sendFile(__dirname + "/PBL/Patient Registration Form/registrationP.html");
+});
+
+app.get("/finddoctor", (req, res) => {
+  res.sendFile(__dirname + "/PBL/chatbot/chatbot.html");
 });
 
 app.post("/signup", (req, res) => {
@@ -57,6 +69,34 @@ app.post("/login", (req, res) => {
       res.send("<h1>Invalid email or password!</h1>");
     }
   });
+});
+
+app.post("/PatientRegistration", (req, res) => {
+  let name = req.body.fullname;
+  let email = req.body.email;
+  let phone = req.body.phone;
+  let birth = req.body.birth;
+  let gender = req.body.gender;
+  let address = req.body.add;
+  let country = req.body.country;
+  let city = req.body.city;
+  let region = req.body.region;
+  let postal = req.body.postal;
+
+  let query =
+    "insert into patients (full_name, email, phone, birth_date, gender, address, country, city, region, postal_code) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  conn.query(
+    query,
+    [name, email, phone, birth, gender, address, country, city, region, postal],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.send("<h1>Error inserting data</h1>");
+      } else {
+        res.send("User registered successfully.");
+      }
+    }
+  );
 });
 
 app.get("/main", (req, res) => {
